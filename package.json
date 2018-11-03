@@ -1,6 +1,6 @@
 {
   "name": "@henderea/commander",
-  "version": "2.19.0",
+  "version": "2.19.1",
   "description": "the complete solution for node.js command-line programs",
   "keywords": [
     "commander",
