@@ -179,7 +179,7 @@ Command.prototype.command = function(name, desc, opts) {
   if (desc) {
     cmd.description(desc);
     this.executables = true;
-    this._execs[cmd._name] = true;
+    this._execs[cmd._name] = opts.exec || true;
     if (opts.isDefault) this.defaultExecutable = cmd._name;
   }
   cmd._noHelp = !!opts.noHelp;
@@ -535,6 +535,14 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
 
   // executable
   var f = argv[1];
+  if(this._execs[args[0]] && this._execs[args[0]] instanceof Command) {
+    f = args[0];
+    args = args.slice(1);
+    args.unshift(argv[1]);
+    args.unshift(argv[0]);
+    this._execs[f].parse(args);
+    return;
+  }
   // name of the subcommand, link `pm-install`
   var bin = basename(f, path.extname(f)) + '-' + args[0];
 
