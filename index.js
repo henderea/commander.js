@@ -101,6 +101,7 @@ function Command(name) {
   this.options = [];
   this._execs = {};
   this._allowUnknownOption = false;
+  this._unknownOptionAsArg = false;
   this._args = [];
   this._name = name || '';
 }
@@ -444,6 +445,18 @@ Command.prototype.allowUnknownOption = function(arg) {
 };
 
 /**
+ * Treat unknown options on the command line as regular arguments.
+ *
+ * @param {Boolean} arg if `true` or omitted, unknown options will
+ * be treated like regular arguments.
+ * @api public
+ */
+Command.prototype.unknownOptionAsArg = function(arg) {
+  this._unknownOptionAsArg = arguments.length === 0 || arg;
+  return this;
+};
+
+/**
  * Parse `argv`, settings options and invoking commands when defined.
  *
  * @param {Array} argv
@@ -620,9 +633,13 @@ Command.prototype.normalize = function(args) {
     } else if (lastOpt && lastOpt.required) {
       ret.push(arg);
     } else if (arg.length > 1 && arg[0] === '-' && arg[1] !== '-') {
-      arg.slice(1).split('').forEach(function(c) {
-        ret.push('-' + c);
-      });
+      if(!this.optionFor(arg.slice(0,2))  && this._unknownOptionAsArg) {
+        ret.push(arg);
+      } else {
+        arg.slice(1).split('').forEach(function(c) {
+          ret.push('-' + c);
+        });
+      }
     } else if (/^--/.test(arg) && ~(index = arg.indexOf('='))) {
       ret.push(arg.slice(0, index), arg.slice(index + 1));
     } else {
@@ -748,7 +765,7 @@ Command.prototype.parseOptions = function(argv) {
     }
 
     // looks like an option
-    if (arg.length > 1 && arg[0] === '-') {
+    if (!this._unknownOptionAsArg && arg.length > 1 && arg[0] === '-') {
       unknownOptions.push(arg);
 
       // If the next argument looks like it might be

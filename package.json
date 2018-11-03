@@ -1,5 +1,5 @@
 {
-  "name": "commander",
+  "name": "@henderea/commander",
   "version": "2.19.0",
   "description": "the complete solution for node.js command-line programs",
   "keywords": [
@@ -8,11 +8,11 @@
     "option",
     "parser"
   ],
-  "author": "TJ Holowaychuk <tj@vision-media.ca>",
+  "author": "Eric Henderson <henderea@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tj/commander.js.git"
+    "url": "https://github.com/henderea/commander.js.git"
   },
   "scripts": {
     "lint": "eslint index.js",
